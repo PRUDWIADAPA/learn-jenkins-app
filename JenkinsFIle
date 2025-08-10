@@ -31,11 +31,7 @@ pipeline {
             steps {
                 echo 'Hello World'
                 sh '''
-                ls -a
-               ls build |grep "index.html"
-                npm --version
-                node --version
-                npm ci
+               test -f /build/index.html
                 npm test
                 '''
             }
