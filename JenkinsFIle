@@ -13,7 +13,7 @@ pipeline {
                 echo 'Hello World'
                 sh '''
                 ls -a
-               grep "index.html" /build
+               grep "index.html" build
                 npm --version
                 node --version
                 npm ci
