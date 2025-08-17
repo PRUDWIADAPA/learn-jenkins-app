@@ -75,29 +75,8 @@ pipeline {
                 }
 
         }
-        stage('Deploy staging') {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                echo "Testing By PRUDWI CEO"
-                npm install netlify-cli@20.1.1 node-jq
-                node_modules/.bin/netlify --version
-                echo "Deploying to site in staging $NETLIFY_SITE_ID"
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
-                
-                 '''
-                 script{
-                    env.PRUDWI_URL=sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-                 }
-            }
-        } 
-        stage('Stage E2E ') {
+        
+        stage('Staging deploy & E2E ') {
                     agent{
                         docker{
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -106,12 +85,18 @@ pipeline {
                         }
                     }
                     environment{
-                        CI_ENVIRONMENT_URL= "${env.PRUDWI_URL}"
+                        CI_ENVIRONMENT_URL= 'STAGING ENV NEED TO BE SET PRUDWI CEO  '
                     }
                     steps {
                     
                         sh '''
                     npx playwright test --reporter=html
+                    echo "Testing By PRUDWI CEO"
+                    npm install netlify-cli@20.1.1 node-jq
+                    node_modules/.bin/netlify --version
+                    echo "Deploying to site in staging $NETLIFY_SITE_ID"
+                    node_modules/.bin/netlify status
+                    CI_ENVIRONMENT_URL=$(node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json)
                         '''
                     }
                         post{
@@ -132,24 +117,6 @@ pipeline {
 
             }
         }
-        stage('Deploy prod') {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                echo "Testing By PRUDWI CEO"
-                npm install netlify-cli@20.1.1
-                node_modules/.bin/netlify --version
-                echo "Deploying to site in production $NETLIFY_SITE_ID"
-                node_modules/.bin/netlify status
-                node_modules/.bin/netlify deploy --dir=build --prod
-                 '''
-            }
-        } 
             stage('PROD E2E ') {
                     agent{
                         docker{
@@ -165,6 +132,12 @@ pipeline {
                     
                         sh '''
                     npx playwright test --reporter=html
+                    echo "Testing By PRUDWI CEO"
+                npm install netlify-cli@20.1.1
+                node_modules/.bin/netlify --version
+                echo "Deploying to site in production $NETLIFY_SITE_ID"
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build --prod
                         '''
                     }
                         post{
