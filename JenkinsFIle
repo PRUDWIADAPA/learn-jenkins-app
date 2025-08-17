@@ -9,7 +9,7 @@ pipeline {
         stage('Build Docker')
         {
             steps{
-                sh 'docker.build -t play-write .'
+                sh 'docker build -t PRUDWICEO_playwrite .'
             }
         }
         
