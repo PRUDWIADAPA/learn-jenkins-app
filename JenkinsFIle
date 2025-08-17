@@ -6,13 +6,8 @@ pipeline {
         REACT_APP_VESRION = '1.2.$BUILD_ID'
     }
     stages {
-        stage('Build Docker')
-        {
-            steps{
-                sh 'docker build -t prudwiceo_playwrite .'
-            }
-        }
         
+
         stage('Build') {
             agent{
                 docker{
